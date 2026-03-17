@@ -17,11 +17,11 @@ static struct gpio_callback button_cb_data;
 
 /******************************************** Local functions declarations *******************************************/
 
-static void button_pressed(const struct device *dev, struct gpio_callback *cb, uint32_t pins);
+static void button_pressed(const struct device *dev, struct gpio_callback *cb, gpio_port_pins_t  pins);
 
 /******************************************** Local functions definitions ********************************************/
 
-static void button_pressed(const struct device *dev, struct gpio_callback *cb, uint32_t pins)
+static void button_pressed(const struct device *dev, struct gpio_callback *cb, gpio_port_pins_t  pins)
 {
 	gpio_pin_toggle_dt(&led);
 }
@@ -29,25 +29,25 @@ static void button_pressed(const struct device *dev, struct gpio_callback *cb, u
 /******************************************* Exported functions definitions ******************************************/
 int main(void)
 {
-	int ret_value;
-
 	/* Initialization */
 	if ((!gpio_is_ready_dt(&led)) ||
 		(!gpio_is_ready_dt(&button)) ||
 		(gpio_pin_configure_dt(&led, GPIO_OUTPUT_ACTIVE) < 0) ||
 		(gpio_pin_configure_dt(&button, GPIO_INPUT) < 0) ||
-		(gpio_pin_interrupt_configure_dt(&button, GPIO_INT_EDGE_FALLING) < 0))
+		(gpio_pin_interrupt_configure_dt(&button, GPIO_INT_EDGE_TO_ACTIVE) < 0))
 	{
 		/* Initialization failed */
-		ret_value = -1;
+		return -1;
 	}
 	else
 	{
 		/* Initialization successful, add interrupt callback */
 		gpio_init_callback(&button_cb_data, &button_pressed, BIT(button.pin));
 		gpio_add_callback(button.port, &button_cb_data);
-		ret_value = 0;
 	}
 
-	return ret_value;
+	for (;;)
+	{
+		k_yield();
+	}
 }
