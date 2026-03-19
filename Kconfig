@@ -1,0 +1,8 @@
+source "Kconfig.zephyr"
+
+config GPIO_BUTTON
+    bool "GPIO Button Switching"
+    depends on GPIO
+    help
+      Demonstrates how to use GPIO buttons and LEDs with Zephyr.
+    default n
