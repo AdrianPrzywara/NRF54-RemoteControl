@@ -3,15 +3,20 @@
 
 /***************************************************** Includes ******************************************************/
 
-#include <stdio.h>
 #include <zephyr/kernel.h>
-#include <zephyr/sys/printk.h>
+#include <zephyr/logging/log.h>
 
 #ifdef CONFIG_GPIO_BUTTON
 #include "gpio_button.h"
 #endif /* CONFIG_GPIO_BUTTON */
 
+/****************************************************** Config *******************************************************/
+
+LOG_MODULE_REGISTER(main, LOG_LEVEL_DBG);
+
 /****************************************************** Defines ******************************************************/
+
+#define SLEEP_TIME_MS (1000u)
 
 /***************************************************** Variables *****************************************************/
 
@@ -22,16 +27,19 @@
 /******************************************* Exported functions definitions ******************************************/
 int main(void)
 {
+	LOG_INF("Main application started\n");
+
 #ifdef CONFIG_GPIO_BUTTON
-	printk("GPIO Button Switching Enabled\n");
+	LOG_DBG("GPIO Button Switching Enabled");
 	Gpio_LedInit();
 	Gpio_ButtonInit();
 #else
-	printk("GPIO Button Switching Disabled\n");
+	LOG_DBG("GPIO Button Switching Disabled");
 #endif /* CONFIG_GPIO_BUTTON */
 
+	LOG_INF("Main application finished initialization");
 	for (;;)
 	{
-		k_yield();
+		k_msleep(SLEEP_TIME_MS);
 	}
 }
