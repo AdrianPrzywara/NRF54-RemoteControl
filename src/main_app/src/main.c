@@ -22,6 +22,8 @@ LOG_MODULE_REGISTER(main, LOG_LEVEL_DBG);
 #define WORK_QUEUE_STACK_SIZE 1024
 #define WORK_QUEUE_PRIORITY 6
 
+K_MUTEX_DEFINE(printk_mutex);
+
 /****************************************************** Defines ******************************************************/
 
 #define SLEEP_TIME_MS 			(1000u)
@@ -147,7 +149,9 @@ void thread0(void)
 		k_work_submit_to_queue(&offload_work_q, &my_work.work);
         delta_time = k_uptime_delta(&time_stamp);
 
+		k_mutex_lock(&printk_mutex, K_FOREVER);
         printk("thread0 yielding this round in %lld ms\n", delta_time);
+		k_mutex_unlock(&printk_mutex);
         k_msleep(20);
     }   
 }
@@ -162,7 +166,9 @@ void thread1(void)
         emulate_work();
         delta_time = k_uptime_delta(&time_stamp);
 
+		k_mutex_lock(&printk_mutex, K_FOREVER);
         printk("thread1 yielding this round in %lld ms\n", delta_time);
+		k_mutex_unlock(&printk_mutex);
         k_msleep(20);
     }   
 }
