@@ -71,3 +71,8 @@ void Gpio_ButtonInit(void)
     }
 }
 
+void Gpio_SwitchLed(void)
+{
+    /* This function can be used to toggle the LED state if needed */
+    gpio_pin_toggle_dt(&led);
+}

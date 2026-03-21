@@ -7,6 +7,7 @@
 
 /******************************************* Exported functions definitions ******************************************/
 
+void Gpio_SwitchLed(void);
 void Gpio_LedInit(void);
 void Gpio_ButtonInit(void);
 
